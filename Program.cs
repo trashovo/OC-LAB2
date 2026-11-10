@@ -24,7 +24,7 @@ namespace MatrixMultiplication
 
             if (T < 1) return;
 
-            Console.WriteLine($"Генерация матриц A({n}x{m}) и B({m}x{k})...");
+            Console.WriteLine($"Генерация матриц A({n}x{m}) и B({m}x{k})");
             
             int[,] A = new int[n, m];
             int[,] B = new int[m, k];
@@ -39,7 +39,7 @@ namespace MatrixMultiplication
                 for (int j = 0; j < k; j++)
                     B[i, j] = rand.Next(0, 10);
 
-            Console.WriteLine($"Запуск умножения на {T} потоках...");
+            Console.WriteLine($"Запуск умножения на {T} потоках");
             Thread[] threads = new Thread[T];
             
             int rowsPerThread = n / T;
@@ -98,13 +98,25 @@ namespace MatrixMultiplication
         {
             for (int i = startRow; i < endRow; i++)
             {
-                for (int j = 0; j < k; j++)
+                //i - t - j
+                for (int t = 0; t < m; t++)
+                {
+                    int a = A[i, t]; 
+                    if (a == 0) continue;
+                    
+                    for (int j = 0; j < k; j++)
+                    {
+                        C[i, j] += a * B[t, j];
+                    }
+                } 
+                //i - j - t    
+                /*for (int j = 0; j < k; j++)
                 {
                     for (int t = 0; t < m; t++)
                     {
                         C[i, j] += A[i, t] * B[t, j];
                     }
-                }
+                }*/
                 lock (locker)
                 {
                     progressCounter++;
